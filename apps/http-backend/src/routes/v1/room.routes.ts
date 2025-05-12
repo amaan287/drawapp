@@ -1,6 +1,9 @@
-import express from "express";
-import { createRoom } from "../../controller/room";
+import express, { Router } from "express";
 import { middleware } from "../../middleware/middleware";
-const router: express.Router = express.Router();
+import { createRoom } from "../../controller/room";
+
+const router: Router = express.Router();
+
 router.post("/create-room", middleware, createRoom);
+
 export default router;
