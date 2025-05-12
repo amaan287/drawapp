@@ -7,9 +7,7 @@ import { Request, Response } from "express";
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const data = CreateUserSchema.safeParse(req.body);
-  console.log("body: ", req.body);
-  console.log("Headers:", req.headers);
-  console.log(data);
+
   if (!data.success) {
     res.json({ message: "Please provide all the requested fields" });
     return;
@@ -20,7 +18,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     const encryptedPassword = await hash(data.data?.password, 10);
-    console.log("encrypted password");
     const user = await prismaClient.user.create({
       data: {
         email: data.data?.email,
@@ -41,7 +38,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       .json({ message: "Signup successfull", user: user, token: token });
     return;
   } catch (e) {
-    console.log("error " + e);
     res.json({ message: "Internal server error" });
     return;
   }
