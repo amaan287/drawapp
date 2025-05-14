@@ -6,19 +6,23 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 declare global {
   namespace Express {
     interface Request {
-      userId?: number;
+      userId?: string;
     }
   }
 }
 
 interface JWTPayload extends JwtPayload {
-  id: number;
+  id: string;
 }
 
-export const middleware = (req: Request, res: Response, next: NextFunction): void => {
+export const middleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   try {
     const authHeader = req.headers["authorization"];
-    
+    console.log(req.headers);
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       res.status(401).json({ message: "No token provided" });
       return;
@@ -29,12 +33,12 @@ export const middleware = (req: Request, res: Response, next: NextFunction): voi
       res.status(401).json({ message: "No token provided" });
       return;
     }
-    
+
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       const payload = decoded as unknown as JWTPayload;
-      
-      if (!payload || typeof payload.id !== 'number') {
+      console.log("Payload:-", payload);
+      if (!payload) {
         res.status(401).json({ message: "Invalid token" });
         return;
       }
